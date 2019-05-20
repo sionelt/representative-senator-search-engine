@@ -31,7 +31,7 @@ Priorities:
 
 If you have any questions, please let us know. 
 
-
+![Example layout](example.png)
 
 
 # find-rep-api
