@@ -47,5 +47,5 @@
   font-size: 2.5rem;
   color: var(--blue);
   margin: 0 0.7rem 0.5rem;
-  border-bottom: 10px solid var(--blue);
+  border-bottom: 10px solid var(--primary);
 }

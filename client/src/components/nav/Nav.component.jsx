@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { NavLink } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import { withRouter, NavLink } from 'react-router-dom'
 import { List, AutoSizer } from 'react-virtualized'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
@@ -8,30 +9,38 @@ import './Nav.css'
 import constants from './Nav.constants'
 import helpers from '../../helpers'
 import Search from '../../services/search.service'
+import { Store } from '../../store'
 
-const Nav = () => {
+const Nav = ({ history }) => {
   const listRef = useRef(null)
+  const [store, dispatch] = Store()
   const [error, setError] = useState('')
   const [searchEntry, setSearchEntry] = useState('')
-  const [fetching, setFetchingState] = useState(true)
-  const [congressList, setCongressList] = useState([])
   const [congressSearchList, setCongressSearchList] = useState([])
   const [selectedState, selectState] = useState(constants.states[0].abbrev)
   const [officeType, selectOfficeType] = useState(constants.offices[0].abbrev)
+
+  const { congressList, fetching } = store
 
   useEffect(() => {
     ;(async () => {
       try {
         const results = await (officeType === 'REP' ? Search.getRepresentatives(selectedState) : Search.getSenators(selectedState))
 
-        setCongressList(results)
+        dispatch({
+          type: 'UPDATE_CONGRESS_LIST',
+          congressList: results,
+        })
         setCongressSearchList(results)
-      } catch(err) {
+      } catch (err) {
         setError(err.message)
       } finally {
-        setFetchingState(false)
+        history.push('/')
+        dispatch({
+          type: 'FETCHING_STATE',
+          fetching: false,
+        })
       }
-
     })()
   }, [selectedState, officeType])
 
@@ -54,12 +63,18 @@ const Nav = () => {
   }
 
   const onOfficeTypeChange = event => {
-    setFetchingState(true)
+    dispatch({
+      type: 'FETCHING_STATE',
+      fetching: true,
+    })
     selectOfficeType(event.target.value)
   }
 
   const onStateChange = event => {
-    setFetchingState(true)
+    dispatch({
+      type: 'FETCHING_STATE',
+      fetching: true,
+    })
     selectState(event.target.value)
   }
 
@@ -104,7 +119,11 @@ const Nav = () => {
         </div>
       </div>
 
-      {error && <div className="alert alert-danger m-3" role="alert">ERROR: {error}</div>}
+      {error && (
+        <div className="alert alert-danger m-3" role="alert">
+          ERROR: {error}
+        </div>
+      )}
 
       {fetching ? (
         <div className="spinner-border text-primary m-3" role="status">
@@ -123,4 +142,8 @@ const Nav = () => {
   )
 }
 
-export default Nav
+Nav.propTypes = {
+  history: PropTypes.object.isRequired,
+}
+
+export default withRouter(Nav)
