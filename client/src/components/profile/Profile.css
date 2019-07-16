@@ -1,0 +1,13 @@
+.profile_container {
+  flex: 1;
+}
+
+.profile_heading {
+  display: inline-block;
+  padding-right: 10px;
+  border-bottom: 10px solid var(--primary);
+}
+
+.profile_table_main_col{
+  width: 200px;
+}
