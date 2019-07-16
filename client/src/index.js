@@ -1,8 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faLandmark, faTimes } from '@fortawesome/free-solid-svg-icons'
+
+import './index.css'
+import 'bootstrap/dist/css/bootstrap.css'
+
+import App from './App'
+import * as serviceWorker from './serviceWorker'
+
+library.add(faLandmark, faTimes)
 
 ReactDOM.render(<App />, document.getElementById('root'));
 
